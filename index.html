@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+            input[type="text"] {
+              font-size: 24px;
+            }
+            b {
+              color: black
+            }
+
+            b.danger {
+              color: red;
+            }
+
+            b#title {
+              margin: 20px 10px 40px 10px;
+            }
+
+            textarea {
+              width: 33%;
+              height: 150px;
+              padding: 12px 20px;
+              box-sizing: border-box;
+              border: 2px solid #ccc;
+              border-radius: 4px;
+              background-color: #f8f8f8;
+              font-size: 16px;
+              resize: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <center>
+        <p v-if="pkmn.id">
+          #{{ pkmn.id }} -
+          <span style="text-transform: capitalize;">{{ pkmn.name }}</span>
+        </p>
+      </center>
+    </div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const thing = {
+        data() {
+          return {
+            p: 1,
+            dex: {},
+            pkmn: {},
+          };
+        },
+        mounted() {
+          this.fetchDat();
+          this.getDex();
+        },
+        methods: {
+          getDex() {
+            fetch("https://pokeapi.co/api/v2/pokedex/1")
+              .then((response) => response.json())
+              .then((data) => {
+                this.dex = data.pokemon_entries;
+              });
+          },
+          fetchDat() {
+            fetch(`https://pokeapi.co/api/v2/pokemon/${this.p}`)
+              .then((response) => response.json())
+              .then((data) => {
+                this.pkmn = data;
+              });
+          },
+        },
+      };
+
+      const app = Vue.createApp(thing).mount("#app");
+    </script>
+  </body>
+</html>
