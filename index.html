@@ -4,41 +4,21 @@
     <meta charset="UTF-8" />
     <title>Document</title>
     <style>
-            input[type="text"] {
-              font-size: 24px;
+            :root {
+                font-family: Arial, Helvetica, sans-serif;
             }
-            b {
-              color: black
+            li {
+                background: white;
+                border: 2px solid #f8f8f8;
             }
-
-            b.danger {
-              color: red;
-            }
-
-            b#title {
-              margin: 20px 10px 40px 10px;
-            }
-
-            textarea {
-              width: 33%;
-              height: 150px;
-              padding: 12px 20px;
-              box-sizing: border-box;
-              border: 2px solid #ccc;
-              border-radius: 4px;
-              background-color: #f8f8f8;
-              font-size: 16px;
-              resize: none;
-      }
     </style>
   </head>
   <body>
     <div id="app">
       <center>
-        <p v-if="pkmn.id">
-          #{{ pkmn.id }} -
-          <span style="text-transform: capitalize;">{{ pkmn.name }}</span>
-        </p>
+        <ul></ul>
+        <h1 v-if="pkmn.id">#{{ pkmn.id }} - <span style="text-transform: capitalize;">{{ pkmn.name }}</span></h1>
+        <br><img :src='pkmn.sprites.other.["official-artwork"].front_default'>
       </center>
     </div>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
