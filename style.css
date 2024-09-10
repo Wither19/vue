@@ -14,14 +14,12 @@ h1 {
 .card {
   background: #ffffff;
   color: #495057;
-  box-shadow: 0 8px 4px -4px rgba(0, 0, 0, 0.8), 0 4px 4px 0 rgba(0, 0, 0, 0.64),
-    0 4px 12px 0 rgba(0, 0, 0, 0.48);
+  box-shadow: 0 8px 4px -4px rgba(0, 0, 0, 0.8), 0 4px 4px 0 rgba(0, 0, 0, 0.64), 0 4px 12px 0 rgba(0, 0, 0, 0.48);
   border-radius: 3px;
   width: 50%;
   height: 500px;
   margin: 0 auto;
   cursor: pointer;
-  user-select: none;
 }
 
 .card h2 {
@@ -30,13 +28,14 @@ h1 {
   padding-top: 231px;
 }
 
-.card > div {
-  font-size: 24px;
+.card>div {
+  font-size: 20px;
   text-align: center;
   margin: 0 40px;
+  padding-top: 240px;
 }
 
-#app > a {
+#app>a {
   display: block;
   text-align: center;
   margin: 20px auto;
@@ -70,7 +69,7 @@ button {
 }
 
 [v-cloak] {
-  display: none;
+  display: none
 }
 
 .score {
@@ -85,7 +84,7 @@ button {
 }
 
 .again {
-  background-color: #f6d55c;
+  background-color: #F6D55C;
 }
 
 .done {
