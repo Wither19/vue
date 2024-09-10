@@ -1,59 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
-    <meta charset="UTF-8" />
-    <title>Document</title>
-    <style>
-            :root {
-                font-family: Arial, Helvetica, sans-serif;
-            }
-            li {
-                background: white;
-                border: 2px solid #f8f8f8;
-            }
-    </style>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Flash Card App</title>
   </head>
   <body>
     <div id="app">
-      <center>
-        <ul></ul>
-        <h1 v-if="pkmn.id">#{{ pkmn.id }} - <span style="text-transform: capitalize;">{{ pkmn.name }}</span></h1>
-        <br><img :src='pkmn.sprites.other.["official-artwork"].front_default'>
-      </center>
+      <h1 v-text="deckName"></h1>
+
+      <div @click="flipped = !flipped" class="card">
+        <h2 v-if="!flipped" v-text="front"></h2>
+        <div v-else v-html="back"></div>
+      </div>
+
+      <div class="navigation">
+        <button @click="move(-1)">&#8592;</button>
+        <button @click="move(1)">&#8594;</button>
+      </div>
+
+      <a :href="readMoreUrl">read more</a>
+      <a :href="settingsUrl">Settings</a>
     </div>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <script src="data.js"></script>
+    <script src="https://unpkg.com/vue@3.0.7/dist/vue.global.js"></script>
     <script>
-      const thing = {
+      const FlashCardApp = {
         data() {
           return {
-            p: 1,
-            dex: {},
-            pkmn: {},
+            deckName: "Vue.js Fundamentals",
+            cards,
+            flipped: false,
+            index: 0,
+            readMoreUrl: "https://v3.vuejs.org/guide",
+            settingsUrl: "/settings/index.html",
           };
         },
-        mounted() {
-          this.fetchDat();
-          this.getDex();
-        },
         methods: {
-          getDex() {
-            fetch("https://pokeapi.co/api/v2/pokedex/1")
-              .then((response) => response.json())
-              .then((data) => {
-                this.dex = data.pokemon_entries;
-              });
+          move(dir) {
+            if (this.cards.length[this.index + change]) {
+              this.index += dir;
+              this.flipped = false;
+            }
           },
-          fetchDat() {
-            fetch(`https://pokeapi.co/api/v2/pokemon/${this.p}`)
-              .then((response) => response.json())
-              .then((data) => {
-                this.pkmn = data;
-              });
+        },
+        computed: {
+          front() {
+            return this.cards[this.index].front;
+          },
+          back() {
+            return this.cards[this.index].back;
           },
         },
       };
 
-      const app = Vue.createApp(thing).mount("#app");
+      const app = Vue.createApp(FlashCardApp).mount("#app");
     </script>
   </body>
 </html>
