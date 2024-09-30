@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        .verse, .verse-header {
+            text-align: center;
+            font-family: 'PT Serif', sans-serif;
+        }
+
+        .verse {
+            margin: 10px 15%;
+            font-size: 20px;
+            line-height: 170%;
+        }
+        
+        .grade-container {
+            border-collapse: collapse;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+
+        .grade-container th {
+            background: rgb(215, 215, 215)
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <input type="text" @keydown.enter="fetchVerses" v-model="verse">
+        <bible-verse
+        :verse="verse"
+        :text="text">
+        </bible-verse>
+
+       <center>
+        <table border="2" cellpadding="4" class="grade-container">
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(classGrade, index) in classes">
+                    <td v-text="classes[index].name"></td>
+                    <td v-if="classes[index].gradeEdit">
+                        <input @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit" style="width: fit-content" type="number" v-model="classes[index].grade">
+                    </td>
+                    <td @click="classes[index].gradeEdit = !classes[index].gradeEdit" v-else style="font-weight: 900;" v-text='classes[index].grade + "%"'></td>
+                </tr>
+            </tbody>
+        </table>
+        <h3 v-text='"Your GPA is " + getGpa()'></h3>
+       </center>
+    </div>
+    <script src="https://unpkg.com/vue@3.5.9/dist/vue.global.js"></script>
+    <script>
+        const thing = {
+            data() {
+                return {
+                    verse: "John 1:1",
+                    text: "In the beginning was the Word, and the Word was with God, and the Word was God.\n",
+
+                    classes: [{
+                        name: "Computer Science Essentials Honors A",
+                        grade: "98.53",
+                        isHonors: false,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "English III",
+                        grade: "83.30",
+                        isHonors: false,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "Environmental Science",
+                        grade: "88.63",
+                        isHonors: false,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "Geometry I",
+                        grade: "87.94",
+                        isHonors: false,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "Seeing Christ in all of Scripture",
+                        grade: "97.14",
+                        isHonors: false,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "Spanish II Honors",
+                        grade: "92.32",
+                        isHonors: true,
+                        gradeEdit: false,
+                    },
+                    {
+                        name: "US History",
+                        grade: "97.90",
+                        isHonors: false,
+                        gradeEdit: false,
+                    }],
+                }
+            },
+            computed: {
+            },
+            methods: {
+                fetchVerses() {
+                    fetch(`https://bible-api.com/${this.verse}`).then(response => response.json()).then(data => {
+                        this.text = data.text;
+                    });
+                },
+                getGpa() {
+                    let average = 0;
+                    let gpa = 0;
+                        for (let i = 0; i <= this.classes.length + 1; i++) {
+                            if (i < this.classes.length) {
+                                if (this.classes[i].isHonors === true) {
+                                    average += this.classes[i].grade + 0.5;
+                                }
+                                else {
+                                    average += this.classes[i].grade;
+                                }
+                            }
+                            if (i === this.classes.length) {
+                                average /= this.classes.length;
+                                average = Math.round(average);
+                            }
+                    }
+                    
+                    if (average < 110 && average >= 89.50) {
+                        gpa += 4;
+                    }
+
+                    else if (average <= 89.49 && average >= 86.50) {
+                        gpa += 3.67;
+                    }
+
+                    else if (average <= 86.49 && average >= 82.50) {
+                        gpa += 3.33;
+                    }
+                    else if (average <= 82.49 && average >= 79.50) {
+                        gpa += 3;
+                    }
+                    else if (average <= 79.49 && average >= 76.50) {
+                        gpa += 2.67;
+                    }
+                    else if (average <= 76.49 && average >= 72.50) {
+                        gpa += 2.33;
+                    }
+                    else if (average <= 72.49 && average >= 69.50) {
+                        gpa += 2;
+                    }
+                    else if (average <= 69.49 && average >= 66.50) {
+                        gpa += 1.67;
+                    }
+                    else if (average <= 66.49 && average >= 62.50) {
+                        gpa += 1.33;
+                    }
+                    else if (average <= 62.49 && average >= 59.50) {
+                        gpa += 1;
+                    }
+                    else {
+                        gpa += 0;
+                    }
+                    return gpa;
+                } 
+            },
+             mounted() {
+             }
+            };
+
+        const app = Vue.createApp(thing);
+        app.component("bible-verse", {
+            name: "bibleVerse",
+            template: `
+                <h2 class="verse-header" v-text="verse"></h2>
+                <p class="verse" v-text="text"></p>
+            `,
+            props: ["verse", "text"],
+        });
+        app.mount("#app");
+    </script>
+</body>
+</html>
