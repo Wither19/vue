@@ -9,10 +9,15 @@
     <div id="app">
       <h1 v-text="deckName"></h1>
 
-      <div @click="flipped = !flipped" class="card">
-        <h2 v-cloak v-show="!flipped" v-text="front"></h2>
-        <div v-show="flipped" v-html="back"></div>
-      </div>
+      <flash-card
+        @flip="flipped = !flipped"
+        @yes="gotIt"
+        @no="again"
+        :flipped="flipped"
+        :is-repeat="isRepeat"
+        :front="front"
+        :back="back">
+      </flash-card>
 
       <div class="navigation">
         <button @click="move(-1)" type="button">&#8592;</button>
@@ -20,11 +25,15 @@
         <button @click="move(1)" type="button">&#8594;</button>
       </div>
 
-      <a :href="readMoreUrl">Read more</a>
+      <read-more :url="readMoreUrl">
+        <template v-slot:copyright="props"
+          >&copy; {{ props.year }} flashcard thingy</template
+        >
+      </read-more>
     </div>
 
     <script src="data.js"></script>
-    <script src="https://unpkg.com/vue@3.0.7/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3.5.9/dist/vue.global.js"></script>
     <script>
       const FlashCardApp = {
         data() {
@@ -39,9 +48,25 @@
         methods: {
           move(change) {
             if (this.cards[this.index + change]) {
-              this.flipped = false;
               this.index += change;
+            } else {
+              this.index = change == 1 ? 0 : this.cards.length - 1;
             }
+            this.flipped = false;
+          },
+          gotIt() {
+            if (this.cards.length === 1) {
+              return alert("Well done!");
+            }
+            this.cards.splice(this.index, 1);
+            if (!this.cards[this.index]) {
+              this.index = 0;
+            }
+            this.flipped = false;
+          },
+          again() {
+            this.cards[this.index].isRepeat = true;
+            this.move(1);
           },
         },
         computed: {
@@ -49,13 +74,46 @@
             return this.cards[this.index].front;
           },
           back() {
-            for (let i = 0; i <= 3e9; i++) {}
             return this.cards[this.index].back;
+          },
+          isRepeat() {
+            return this.cards[this.index].isRepeat;
           },
         },
       };
 
-      const app = Vue.createApp(FlashCardApp).mount("#app");
+      const app = Vue.createApp(FlashCardApp);
+
+      app.component("read-more", {
+        template:
+          '<a :href="url"><slot>Read more</slot></a><slot :year="year" name="copyright"></slot>',
+        name: "readMore",
+        props: ["url"],
+        data() {
+          return {
+            year: 2024,
+          };
+        },
+      });
+
+      app.component("flash-card", {
+        template: `
+        <div @click="$emit('flip')" :class="{again: isRepeat}" class="card">
+            <h2 v-if="!flipped" v-text="front"></h2>
+            <div v-else>
+              <div v-html="back"></div>
+              <div class="score">
+                <button @click.stop="$emit('yes')">GOT IT</button>
+                <button @click.stop="$emit('no')">AGAIN</button>
+              </div>
+            </div>
+          </div>
+          `,
+        name: "flashCard",
+        props: ["flipped", "isRepeat", "front", "back"],
+      });
+
+      app.mount("#app");
     </script>
   </body>
 </html>
