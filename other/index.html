@@ -49,9 +49,9 @@
                 <tr v-for="(classGrade, index) in classes">
                     <td v-text="classes[index].name"></td>
                     <td v-if="classes[index].gradeEdit">
-                        <input @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit" style="width: fit-content" type="number" v-model="classes[index].grade">
+                        <input @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit;" style="width: fit-content" type="number" v-model="classes[index].grade">
                     </td>
-                    <td @click="classes[index].gradeEdit = !classes[index].gradeEdit" v-else style="font-weight: 900;" v-text='classes[index].grade + "%"'></td>
+                    <td @click="classes[index].gradeEdit = !classes[index].gradeEdit; classes[!index].gradeEdit = false;" v-else style="font-weight: 900;" v-text='classes[index].grade + "%"'></td>
                 </tr>
             </tbody>
         </table>
@@ -68,43 +68,43 @@
 
                     classes: [{
                         name: "Computer Science Essentials Honors A",
-                        grade: "98.53",
+                        grade: 98.53,
                         isHonors: false,
                         gradeEdit: false,
                     },
                     {
                         name: "English III",
-                        grade: "83.30",
+                        grade: 83.30,
                         isHonors: false,
                         gradeEdit: false,
                     },
                     {
                         name: "Environmental Science",
-                        grade: "88.63",
+                        grade: 88.63,
                         isHonors: false,
                         gradeEdit: false,
                     },
                     {
                         name: "Geometry I",
-                        grade: "87.94",
+                        grade: 87.94,
                         isHonors: false,
                         gradeEdit: false,
                     },
                     {
                         name: "Seeing Christ in all of Scripture",
-                        grade: "97.14",
+                        grade: 97.14,
                         isHonors: false,
                         gradeEdit: false,
                     },
                     {
                         name: "Spanish II Honors",
-                        grade: "92.32",
+                        grade: 92.32,
                         isHonors: true,
                         gradeEdit: false,
                     },
                     {
                         name: "US History",
-                        grade: "97.90",
+                        grade: 97.90,
                         isHonors: false,
                         gradeEdit: false,
                     }],
@@ -124,10 +124,10 @@
                         for (let i = 0; i <= this.classes.length + 1; i++) {
                             if (i < this.classes.length) {
                                 if (this.classes[i].isHonors === true) {
-                                    average += Number(this.classes[i].grade) + 0.5;
+                                    average += this.classes[i].grade + 0.5;
                                 }
                                 else {
-                                    average += Number(this.classes[i].grade);
+                                    average += this.classes[i].grade;
                                 }
                             }
                             if (i === this.classes.length) {
@@ -179,10 +179,10 @@
                         for (let i = 0; i <= this.classes.length + 1; i++) {
                             if (i < this.classes.length) {
                                 if (this.classes[i].isHonors === true) {
-                                    average += Number(this.classes[i].grade) + 0.5;
+                                    average += this.classes[i].grade + 0.5;
                                 }
                                 else {
-                                    average += Number(this.classes[i].grade);
+                                    average += this.classes[i].grade;
                                 }
                             }
                             if (i === this.classes.length) {
