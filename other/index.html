@@ -36,9 +36,9 @@
             <td v-if="classes[index].gradeEdit">
               <input
                 @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit;"
-                style="width: 33%"
                 type="number"
                 v-model="classes[index].grade"
+                style="max-width: 50px"
               />
             </td>
             <td
@@ -74,7 +74,7 @@
               },
               {
                 name: "English III",
-                grade: 83.3,
+                grade: 83.37,
                 isHonors: false,
                 gradeEdit: false,
               },
@@ -92,7 +92,7 @@
               },
               {
                 name: "Seeing Christ in all of Scripture",
-                grade: 97.14,
+                grade: 98.18,
                 isHonors: false,
                 gradeEdit: false,
               },
