@@ -10,48 +10,21 @@
       href="https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="app">
       <input type="text" @keydown.enter="fetchVerses" v-model="verse" />
 
-      <bible-verse :verse="verse" :text="text"> </bible-verse>
+      <bible-verse :verse="verse" :text="text"></bible-verse>
 
-      <table
-        style="margin-left: auto; margin-right: auto"
-        border="2"
-        cellpadding="4"
-        class="grade-container"
-      >
-        <thead>
-          <tr>
-            <th>Class Name</th>
-            <th>Grade</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(classGrade, index) in classes">
-            <td v-text="classes[index].name"></td>
-            <td v-if="classes[index].gradeEdit">
-              <input
-                @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit;"
-                type="number"
-                v-model="classes[index].grade"
-                style="max-width: 50px"
-              />
-            </td>
-            <td
-              @click="classes[index].gradeEdit = !classes[index].gradeEdit; classes[!index].gradeEdit = false;"
-              v-else
-              style="font-weight: 900"
-              v-text='classes[index].grade + "%"'
-            ></td>
-          </tr>
-        </tbody>
-      </table>
-      <div style="text-align: center">
-        <h2 v-text='"Your Average grade is: " + getAverage()'></h2>
+      <grade-cell :classes="classes"></grade-cell>
+
+      <div class="grade-info">
+        <h2 v-text='"Your Average grade is: " + getAverage() + "%"'></h2>
         <br />
         <h2 v-text='"GPA: " + getGpa()'></h2>
         <h2 v-text='"Letter Grade: " + getLetter()'></h2>
@@ -68,7 +41,7 @@
             classes: [
               {
                 name: "Computer Science Essentials Honors A",
-                grade: 98.53,
+                grade: 98.13,
                 isHonors: false,
                 gradeEdit: false,
               },
@@ -80,7 +53,7 @@
               },
               {
                 name: "Environmental Science",
-                grade: 88.63,
+                grade: 86.75,
                 isHonors: false,
                 gradeEdit: false,
               },
@@ -98,13 +71,13 @@
               },
               {
                 name: "Spanish II Honors",
-                grade: 92.32,
+                grade: 92.3,
                 isHonors: true,
                 gradeEdit: false,
               },
               {
                 name: "US History",
-                grade: 97.9,
+                grade: 98.8,
                 isHonors: false,
                 gradeEdit: false,
               },
@@ -230,6 +203,7 @@
       };
 
       const app = Vue.createApp(thing);
+
       app.component("bible-verse", {
         name: "bibleVerse",
         template: `
@@ -238,6 +212,39 @@
             `,
         props: ["verse", "text"],
       });
+
+      app.component("grade-cell", {
+        name: "gradeCell",
+        template: `
+        <table border="2" cellpadding="4" class="grade-container">
+        <thead>
+          <tr>
+            <th>Class Name</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(classGrade, index) in classes">
+            <td v-text="classes[index].name"></td>
+            <td class="type-cell" v-if="classes[index].gradeEdit">
+              <input
+                @keydown.enter="classes[index].gradeEdit = !classes[index].gradeEdit;"
+                type="number"
+                v-model="classes[index].grade"
+              />
+            </td>
+            <td 
+              class="editable-cell"
+              @click="classes[index].gradeEdit = !classes[index].gradeEdit;"
+              v-else
+              v-text='classes[index].grade + "%"'
+            ></td>
+          </tr>
+        </tbody>
+      </table>`,
+        props: ["classes"],
+      })
+
       app.mount("#app");
     </script>
   </body>

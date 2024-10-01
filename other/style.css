@@ -1,3 +1,7 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
 .verse, .verse-header {
     text-align: center;
     font-family: 'PT Serif', sans-serif;
@@ -11,9 +15,27 @@
 
 .grade-container {
     border-collapse: collapse;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-left: auto; 
+    margin-right: auto
 }
 
 .grade-container th {
     background: rgb(215, 215, 215)
+}
+
+.editable-cell {
+    cursor: context-menu;
+}
+
+.editable-cell:hover, .type-cell {
+    background: rgb(151, 151, 151);
+    color: whitesmoke;
+}
+
+.type-cell input {
+    max-width: 50px;
+}
+
+.grade-info {
+    text-align: center;
 }
