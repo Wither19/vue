@@ -183,31 +183,30 @@
         name: "gradeTable",
         template: `
         <table border="2" cellpadding="4" class="grade-container">
-        <thead>
-          <tr>
-            <th>Class Name</th>
-            <th>Grade</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(classGrade, index) in classes.names">
-            <td v-text="classes.names[index]"></td>
-            <td class="type-cell" v-if="classes.gradeEdit[index]">
-              <input
-                @keydown.enter="classes.gradeEdit[index] = !classes.gradeEdit[index];"
-                type="number"
-                v-model="classes.grades[index]"
-              />
-            </td>
-            <td 
-              class="editable-cell"
-              @click="classes.gradeEdit[index] = !classes.gradeEdit[index];"
-              v-else
-              v-text='classes.grades[index] + "%"'
-            ></td>
-          </tr>
-        </tbody>
-      </table>`,
+          <thead>
+            <tr>
+              <th>Class Name</th>
+              <th>Grade</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(classGrade, index) in classes.names">
+              <td v-text="classes.names[index]"></td>
+              <td class="type-cell" v-if="classes.gradeEdit[index]">
+                <input
+                  @keydown.enter="classes.gradeEdit[index] = !classes.gradeEdit[index];"
+                  type="number"
+                  v-model="classes.grades[index]" />
+              </td>
+              <td 
+                class="editable-cell"
+                @click="classes.gradeEdit[index] = !classes.gradeEdit[index];"
+                v-else
+                v-text='classes.grades[index] + "%"'>
+              </td>
+            </tr>
+          </tbody>
+        </table>`,
         props: ["classes"],
       })
 
