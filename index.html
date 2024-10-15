@@ -15,29 +15,53 @@
 			href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
 			rel="stylesheet" />
 		<link rel="stylesheet" href="style.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/firacode@6.2.0/distr/fira_code.css" />
 	</head>
 	<body>
-		<div id="app">
-			<input type="text" @keydown.enter="fetchVerses" v-model="verse" />
+		<div id="app" @keydown="shortcuts(e)">
+			<center>
+				<button
+					style="margin: 24px 0px; text-align: center;"
+					@click="bibleVerseDisplay = !bibleVerseDisplay"
+					v-text="bibleVerseDisplay ? componentName.bibleVerse: componentName.gradeTable"></button>
+			</center>
 
-			<bible-verse :verse="verse" :text="text"> </bible-verse>
+			<div v-if="bibleVerseDisplay">
+				<bible-verse :verse="verse" :text="text" @grab="fetchVerses">
+				</bible-verse>
+			</div>
 
-			<grade-table :classes="classes"> </grade-table>
+			<div v-else>
+				<input type="color" v-if="colorPicker" />
+				<grade-table
+					@get-grade="getAllTheGradeStuff"
+					:honors="honorsEnabled"
+					:is-honors="isHonors"
+					:classes="classes"></grade-table>
 
-			<div class="grade-info">
-				<h2 v-text='"Your Average grade is: " + getAverage() + "%"'></h2>
-				<br />
-				<h2 v-text='"GPA: " + getGpa()'></h2>
-				<h2 v-text='"Letter Grade: " + getLetter()'></h2>
+				<div class="grade-info">
+					<h2 v-text='"Your Average grade is: " + getAverage() + "%"'></h2>
+					<br />
+					<h2 v-text='"GPA: " + getGpa()'></h2>
+					<h2 v-text='"Letter Grade: " + getLetter()'></h2>
+				</div>
 			</div>
 		</div>
-		<script src="https://unpkg.com/vue@3.5.9/dist/vue.global.js"></script>
+		<script src="https://unpkg.com/vue@latest"></script>
 		<script>
 			const thing = {
 				data() {
 					return {
 						verse: "John 1:1",
 						text: "In the beginning was the Word, and the Word was with God, and the Word was God.\n",
+
+						bibleVerseDisplay: false,
+						componentName: {
+							bibleVerse: "Bible Verse From Input",
+							gradeTable: "Text-editable Grade Table With GPA Calculator",
+						},
 
 						classes: {
 							names: [
@@ -53,9 +77,16 @@
 							isHonors: [false, false, false, false, false, true, false],
 							gradeEdit: [false, false, false, false, false, false, false],
 						},
+						honorsEnabled: true,
+						colorPicker: false,
 					};
 				},
-				computed: {},
+				computed: {
+					roundGrades() {
+						let rounded = this.classes.grades.map((x) => Math.ceil(x));
+						this.classes.grades = rounded;
+					},
+				},
 				methods: {
 					fetchVerses() {
 						fetch(`https://bible-api.com/${this.verse}`)
@@ -63,6 +94,11 @@
 							.then((data) => {
 								this.text = data.text;
 							});
+					},
+					getAllTheGradeStuff() {
+						this.getGpa();
+						this.getLetter();
+						this.getAverage();
 					},
 					getGpa() {
 						let average = 0;
@@ -169,6 +205,11 @@
 						}
 						return average;
 					},
+					shortcuts(e) {
+						if (e.altKey && e.key === "p") {
+							this.colorPicker = !this.colorPicker;
+						}
+					},
 				},
 				mounted() {},
 			};
@@ -178,7 +219,12 @@
 			app.component("bible-verse", {
 				name: "bibleVerse",
 				template: `
-                <h2 class="verse-header" v-text="verse"></h2>
+                <center>
+                  <input type="text" @keydown.enter="$emit('grab')" :v-model="verse" />
+                  <button @click="$emit('grab')">Fetch</button>
+                </center>
+                
+                <h2 class="verse-header" v-text="v-model"></h2>
                 <p class="verse" v-text="text"></p>
             `,
 				props: ["verse", "text"],
@@ -190,12 +236,16 @@
         <table border="2" cellpadding="4" class="grade-container">
           <thead>
             <tr>
+              <th v-if="honors">Honors?</th>
               <th>Class Name</th>
               <th>Grade</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(classGrade, index) in classes.names">
+              <td style="text-align: center; vertical-align: middle;" v-if="honors">
+                <input @click="$emit('gradeGet')" type="checkbox" v-model="classes.isHonors[index]" />
+                </td>
               <td v-text="classes.names[index]"></td>
               <td class="type-cell" v-if="classes.gradeEdit[index]">
                 <input
@@ -212,7 +262,7 @@
             </tr>
           </tbody>
         </table>`,
-				props: ["classes"],
+				props: ["classes", "honors", "isHonors"],
 			});
 
 			app.mount("#app");
